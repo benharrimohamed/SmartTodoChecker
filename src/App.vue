@@ -1,7 +1,6 @@
 <template>
-   <ArticleCard/>
-   <ArticleCard/>
-   <ArticleCard/>
+  <ArticleCard/>  
+  <ArticleCard/>  
 </template>
 
 <script>
@@ -12,5 +11,4 @@ export default {
   components: { ArticleCard,ProfileCard },
   name: 'App',
 }
-
-    ProfileCard</script>
+</script>
