@@ -6,10 +6,10 @@
                 @mouseenter="isGrabbed=true">
     <div class="p-6">
     <div :class=s.title>
-        Finding a job
+        Sofware engineering
     </div>
     <p :class=s.p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. aut molestias ullam, consequatur ipsam commodi quam.
+        Simple, flexible, get a clear view of who’s doing what and what needs to get done. Learn more in our guide for getting started. and powerful. All it takes are boards, lists, and cards to get a clear view of who’s doing what and what needs to get done. Learn more in our guide for getting started.
     </p>
     </div>
 </div>
@@ -17,18 +17,17 @@
 </template>
 
 <script>
-import { ref, toRef } from 'vue'
+import { ref } from 'vue'
 import ArticleCardStyle from '@/tailwind/appStyles'
 
 export default {
-    setup (props) {
+    props : ['task'],
+    setup () {
+       
         const isDark = ref(false)
         const isGrabbed = ref(false)
         const s = ref('')
-        const {task} = toRef(props)
-        console.log(task.value)
         s.value = ArticleCardStyle.value
-        console.log(ArticleCardStyle.value)
         return {
             isDark,
             s,
