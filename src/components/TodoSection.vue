@@ -1,5 +1,5 @@
 <template>
-  <div id="todoSection" class="px-3 bg-slate-500 w-1/3 rounded-md py-3">
+  <div id="todoSection" class="px-3 bg-slate-500 w-1/3 rounded-md py-8 overflow-y-auto max-h-screen">
     <TodoSectionHead/>
     <todo-section-buttons/>
     <todo-section-body/>

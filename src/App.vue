@@ -1,6 +1,8 @@
 <template>
   <div class="mx-auto">
-    <div class="flex mt-6 p-3">
+    <div class="flex mt-6 py-8 px-3 max-h-screen">
+      <todo-section></todo-section>
+      <todo-section></todo-section>
       <todo-section></todo-section>
     </div>
   </div>
