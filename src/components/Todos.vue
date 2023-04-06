@@ -1,10 +1,5 @@
 <template>
   <div class="scroll-auto overflow-hidden">
-  <todo-card></todo-card>
-  <todo-card></todo-card>
-  <todo-card></todo-card>
-  <todo-card></todo-card>
-  <todo-card></todo-card>
 </div>
 </template>
 
