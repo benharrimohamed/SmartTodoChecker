@@ -1,11 +1,10 @@
 <template>
-  <div class="mx-auto">
-    <div class="flex mt-6 py-8 px-3 max-h-screen">
+    <div class="grid grid-rows-3 m-3 p-4 px-3 border border-red-300 md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid-cols-4">
+      <todo-section></todo-section>
       <todo-section></todo-section>
       <todo-section></todo-section>
       <todo-section></todo-section>
     </div>
-  </div>
 </template>
 
 <script>

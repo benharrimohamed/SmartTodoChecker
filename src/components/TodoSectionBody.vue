@@ -1,5 +1,6 @@
 <template>
   <div>
+    <TodoSectionButtons v-if="isAddingNewTodo"></TodoSectionButtons>
     <TodoAddTaskForm></TodoAddTaskForm>
     <Todos></Todos>
   </div>
@@ -8,8 +9,16 @@
 <script>
 import TodoAddTaskForm from './TodoAddTaskForm.vue'
 import Todos from './Todos.vue'
+import TodoSectionButtons from './TodoSectionButtons.vue';
 export default {
-    components: {TodoAddTaskForm,Todos}
+    components: {TodoSectionButtons,TodoAddTaskForm,Todos},
+    setup (props) {
+      const isAddingNewTodo = props.isAddingNewTodo
+
+      return {
+        isAddingNewTodo
+      }
+    }
 
 }
 </script>
