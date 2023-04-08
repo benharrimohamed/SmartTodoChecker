@@ -1,6 +1,6 @@
 <template>
     <div class="grid m-3 p-4 border border-red-300">
-      <div class="mx-auto w-full border-red-300 p-2 rounded-md shadow-md bg-blue-500 md:max-mx-1/3">
+      <div class="mx-auto w-full max-h-screen border-red-300 p-2 rounded-md shadow-md bg-blue-500 md:max-mx-1/3 overflow-hidden">
         <div class="flex justify-between">
          <div class="text-white font-bold">Todos</div>
          <div>
@@ -24,11 +24,13 @@
 
         </button>
        </div>
-       <TodoAddTaskForm v-if=isAddingTodo></TodoAddTaskForm>
-       <div v-else 
-              v-for="todo in state.todos" :key="todo.id">
-        <TodoCard :todo=todo ></TodoCard>
+       
+       <TodoAddTaskForm v-if=isAddingTodo @addNewTodo=addTodo></TodoAddTaskForm>
+       <div v-else class="overflow-y-scroll border border-red-400 max-h-screen">
+       <div v-for="todo in state.todos" :key="todo.id">
+        <TodoCard :todo=todo @deleteTodo="deleteTodo"></TodoCard>
        </div>
+      </div>
      </div>
    </div>
 </template>
@@ -37,11 +39,13 @@
 import TodoCard from './components/TodoCard.vue';
 import TodoAddTaskForm from './components/TodoAddTaskForm.vue';
 import { onBeforeMount, reactive, ref } from 'vue';
+import successToast from './components/Toasts/successToast.vue';
 
 export default {
   components : {
     TodoCard,
-    TodoAddTaskForm
+    TodoAddTaskForm,
+    successToast
   },
   setup () {
 
@@ -49,21 +53,62 @@ export default {
       const state = reactive({todos : []})
       const handleAddingButtonEvent = () => {isAddingTodo.value=!isAddingTodo.value}
 
-      const getTodosFromApi = async () => {
+
+      // get Todos from database
+      const getTodos = async () => {
         fetch("http://localhost:3000/todos")
         .then(res => res.json())
         .then(data => state.todos = data)
         .catch (err => console.log(err))
       }
 
+      //Add a new todo to database
+      const addTodo = async (data) => {
+
+       fetch("http://localhost:3000/todos", 
+          {method: "POST",
+              headers: {"Content-Type": "application/json",},
+                  body: JSON.stringify(data),})
+       .then(data => {
+          if (data.status == 201)
+          {
+              getTodos()
+              isAddingTodo.value=!isAddingTodo.value
+
+          }
+       })
+       .catch (err => console.log(err))
+  
+      }
+
+      //delete Todo from database
+
+      const deleteTodo = async (id) => {
+
+        fetch ("http://localhost:3000/todos/"+id,{method: 'DELETE',headers: {"Content-Type": "application/json"}})
+        .then (data => {
+          if (data.status == 200)
+            {
+              console.log("deleted succ")
+              getTodos()
+            }
+        })
+        .catch(err => console.log(err))
+      }
+
+
+      //get All Todos before component mount
       onBeforeMount (() => {
-        getTodosFromApi()
+        getTodos()
       })
 
       return {
         isAddingTodo,
         handleAddingButtonEvent,
-        state
+        state,
+        addTodo,
+        successToast,
+        deleteTodo
       }
   }
 }
