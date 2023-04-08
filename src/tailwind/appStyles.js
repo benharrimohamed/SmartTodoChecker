@@ -1,6 +1,6 @@
-import { ref } from "vue"
+import { reactive } from "vue"
 
-const ArticleCardStyle = ref({
+const ArticleCardStyle = reactive({
 
     title : 'text-slate-600 dark:text-white font-bold text-md mx-auto',
     p: 'text-slate-600 dark:text-white font-meduim mt-3',
