@@ -36,7 +36,8 @@ export default {
       {
         title:'', 
         description:'',
-        category : ''
+        category : '',
+        isDone : false
       })
 
     

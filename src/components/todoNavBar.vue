@@ -4,6 +4,10 @@
         All  
         <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-cyan-800 bg-cyan-200 rounded-full">{{ todosNb }}</span> 
     </div>
+      <div @click=handleDoneTodos class="flex justify-between items-center cursor-pointer bg-red-500 px-2 py-1 text-white rounded-full shadow-lg">
+        Done 
+        <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-red-800 bg-red-200 rounded-full">{{ doneCount }}</span> 
+    </div>
     <div @click=handleHealthTodos class="flex justify-between items-center cursor-pointer bg-yellow-500 px-2 py-1 text-white rounded-full shadow-lg">
         Health
         <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">{{ healthCount }}</span>
@@ -20,14 +24,7 @@
         Goals
         <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full">{{ goalsCount }}</span>
    </div>
-   <div @click=handleGoalTodos class="flex justify-between items-center cursor-pointer bg-gray-500 px-2 py-1 text-white rounded-full shadow-lg">
-        Goals
-        <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full">{{ goalsCount }}</span>
-   </div>
-   <div @click=handleGoalTodos class="flex justify-between items-center cursor-pointer bg-gray-500 px-2 py-1 text-white rounded-full shadow-lg">
-        Goals
-        <span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full">{{ goalsCount }}</span>
-   </div>
+   
    </div>
 </template>
 
@@ -35,10 +32,11 @@
 
 export default {
 
-    props: ['healthCount','workCount','studiesCount','goalsCount','todosNb'],
+    props: ['healthCount','workCount','studiesCount','goalsCount','todosNb','doneCount'],
     setup (props, {emit}) {
 
         const handleAllTodos = () => {emit('getTodosBy','All')}
+        const handleDoneTodos = () => {emit('getTodosBy','Done')}
         const handleHealthTodos = () => {emit('getTodosBy','Health')}
         const handleWorkTodos = () => {emit('getTodosBy','Work')}
         const handleStudieTodos = () => {emit('getTodosBy','Studies')}
@@ -49,7 +47,8 @@ export default {
             handleAllTodos,
             handleHealthTodos,
             handleStudieTodos,
-            handleWorkTodos
+            handleWorkTodos,
+            handleDoneTodos
         }
     }
 }

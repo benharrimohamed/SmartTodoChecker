@@ -24,6 +24,7 @@
         </button>
        </div>
        <todoNavBar v-if="!isAddingTodo"
+                    :doneCount="doneCount"
                     :healthCount="healthCount" 
                     :workCount="workCount"
                     :studiesCount="studiesCount"
@@ -31,17 +32,17 @@
                     @getTodosBy="handleGetTodosByCategory"
                     :todosNb="todosNb"
                     ></todoNavBar>
-       <TodoAddTaskForm v-if=isAddingTodo @addNewTodo=addTodo></TodoAddTaskForm>
-       <div v-else-if="todosNb>0">
+       <TodoAddTaskForm v-if=isAddingTodo  @addNewTodo=addTodo></TodoAddTaskForm>
+       <div v-else-if="stateTemp.todos.length >0">
        <div class="border border-red">
        <div v-for="todo in stateTemp.todos" :key="todo.id">
-        <TodoCard :todo=todo @deleteTodo="deleteTodo"></TodoCard>
+        <TodoCard :todo=todo @TodoIsDone=checkTodo @deleteTodo="deleteTodo"></TodoCard>
        </div>
       </div>
       </div>
        <div v-else class="py-2 bg-blue-300 mt-2 rounded-md"> 
        <div class="mx-auto text-blue-600 font-meduim w-fit">
-        You have nothing todo today !
+        Nothing here !
       </div>
       </div>
      </div>
@@ -72,13 +73,16 @@ export default {
       const workCount = ref(0)
       const studiesCount = ref(0)
       const goalsCount = ref(0)
+      const doneCount = ref(0)
     
       const handleAddingButtonEvent = () => {isAddingTodo.value=!isAddingTodo.value}
 
       // get todos number for each category
       const getTodoNumberCategory =  (category) => {
             let temp = ref([])
-            console.log(state.todos)
+            if (category === 'Done')
+            temp.value = state.todos.filter(todo => todo.isDone === true)
+            else
             temp.value = state.todos.filter(todo => todo.category == category)
             return temp.value.length
       }
@@ -96,6 +100,7 @@ export default {
           workCount.value = getTodoNumberCategory('Work'),
           studiesCount.value = getTodoNumberCategory('Studies'),
           goalsCount.value = getTodoNumberCategory('Goals')
+          doneCount.value = getTodoNumberCategory('Done')
            
         })
         .catch (err => console.log(err))
@@ -136,6 +141,21 @@ export default {
       }
 
 
+      const checkTodo = (data) => {
+        data.isDone = true
+
+        fetch("http://localhost:3000/todos/"+data.id, 
+          {method: "PUT",
+              headers: {"Content-Type": "application/json",},
+                  body: JSON.stringify(data),})
+        .then (data => {
+          if (data.status == 200)
+          console.log("Success")
+        }).catch (err => console.log(err))
+
+      }
+
+
       //get All Todos before component mount
       onBeforeMount (() => {
         getTodos()
@@ -144,10 +164,16 @@ export default {
 
       const handleGetTodosByCategory =  (category) => {
 
-
         stateTemp.todos=state.todos
-        if (category != 'All')
+        console.log(stateTemp.todos)
+        if (category != 'All' && category != 'Done')
         stateTemp.todos = stateTemp.todos.filter(todo => todo.category === category)
+        
+        if(category === 'Done')
+        {
+          console.log(stateTemp.todos)
+          stateTemp.todos = stateTemp.todos.filter(todo => todo.isDone)
+        }
       }
 
       return {
@@ -162,7 +188,9 @@ export default {
         healthCount,
         studiesCount,
         goalsCount,
-        handleGetTodosByCategory
+        doneCount,
+        handleGetTodosByCategory,
+        checkTodo
       }
   }
 }
