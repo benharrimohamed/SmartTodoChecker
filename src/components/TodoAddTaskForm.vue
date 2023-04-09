@@ -10,6 +10,15 @@
                <textarea v-model=newTodo.description id="message" rows="4" class="mb-3 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
                </div>
                <div>
+                <label for="small" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                 <select v-model="newTodo.category" id="small" class="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option selected value="Work"  class="text-yellow-500 font-meduim">Work</option>
+                  <option value="Health" class="text-green-500 font-meduim">Health</option>
+                  <option value="Studies" class="text-blue-500 font-meduim">Studies</option>
+                  <option value="Goals" class="text-purple-500 font-meduim">Daily Goals</option>
+                </select>
+               </div>
+               <div>
                 <button type="submit" class="text-white w-full bg-blue-500 hover:bg-green-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-500">Save</button>
                </div>
             </div>
@@ -17,7 +26,7 @@
 </template>
 
 <script>
-import { reactive,ref,defineEmits } from 'vue'
+import { reactive } from 'vue'
 export default {
 
   setup(props, {emit}) {
@@ -26,7 +35,8 @@ export default {
     const newTodo = reactive(
       {
         title:'', 
-        description:''
+        description:'',
+        category : ''
       })
 
     

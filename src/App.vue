@@ -1,17 +1,16 @@
 <template>
-    <div class="grid m-3 p-4 border border-red-300">
-      <div class="mx-auto w-full max-h-screen border-red-300 p-2 rounded-md shadow-md bg-blue-500 md:max-mx-1/3 overflow-hidden">
+    <div class="grid m-3 p-2 lg:flex max-w-screen">
+      <div class="mx-auto w-full max-w-screen h-screen max-h-screen p-2 rounded-md shadow-md bg-blue-500 ">
         <div class="flex justify-between">
          <div class="text-white font-bold">Todos</div>
-         <div>
+          <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" data-te-dropdown-toggle-ref aria-expanded="false">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
           </svg>
-        </div>
-       </div>
+        </button>
+      </div>
        <div>
         <button class="bg-white py-1 w-full rounded-md mt-2" @click="handleAddingButtonEvent">
-
           <svg v-if=isAddingTodo xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
           stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto text-red-500">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -24,12 +23,26 @@
 
         </button>
        </div>
-       
+       <todoNavBar v-if="!isAddingTodo"
+                    :healthCount="healthCount" 
+                    :workCount="workCount"
+                    :studiesCount="studiesCount"
+                    :goalsCount="goalsCount"
+                    @getTodosBy="handleGetTodosByCategory"
+                    :todosNb="todosNb"
+                    ></todoNavBar>
        <TodoAddTaskForm v-if=isAddingTodo @addNewTodo=addTodo></TodoAddTaskForm>
-       <div v-else class="overflow-y-scroll border border-red-400 max-h-screen">
-       <div v-for="todo in state.todos" :key="todo.id">
+       <div v-else-if="todosNb>0">
+       <div class="border border-red">
+       <div v-for="todo in stateTemp.todos" :key="todo.id">
         <TodoCard :todo=todo @deleteTodo="deleteTodo"></TodoCard>
        </div>
+      </div>
+      </div>
+       <div v-else class="py-2 bg-blue-300 mt-2 rounded-md"> 
+       <div class="mx-auto text-blue-600 font-meduim w-fit">
+        You have nothing todo today !
+      </div>
       </div>
      </div>
    </div>
@@ -40,25 +53,51 @@ import TodoCard from './components/TodoCard.vue';
 import TodoAddTaskForm from './components/TodoAddTaskForm.vue';
 import { onBeforeMount, reactive, ref } from 'vue';
 import successToast from './components/Toasts/successToast.vue';
+import todoNavBar from './components/todoNavBar.vue'
 
 export default {
   components : {
     TodoCard,
     TodoAddTaskForm,
-    successToast
+    successToast,
+    todoNavBar
   },
   setup () {
 
       const isAddingTodo = ref(false)
+      const todosNb = ref (0)
       const state = reactive({todos : []})
+      const stateTemp = reactive({todos : []})
+      const healthCount = ref(0)
+      const workCount = ref(0)
+      const studiesCount = ref(0)
+      const goalsCount = ref(0)
+    
       const handleAddingButtonEvent = () => {isAddingTodo.value=!isAddingTodo.value}
 
+      // get todos number for each category
+      const getTodoNumberCategory =  (category) => {
+            let temp = ref([])
+            console.log(state.todos)
+            temp.value = state.todos.filter(todo => todo.category == category)
+            return temp.value.length
+      }
 
       // get Todos from database
       const getTodos = async () => {
+        console.log('call to datatase ')
         fetch("http://localhost:3000/todos")
         .then(res => res.json())
-        .then(data => state.todos = data)
+        .then(data => {
+          state.todos = data
+          stateTemp.todos = data
+          todosNb.value = data.length
+          healthCount.value = getTodoNumberCategory('Health'),
+          workCount.value = getTodoNumberCategory('Work'),
+          studiesCount.value = getTodoNumberCategory('Studies'),
+          goalsCount.value = getTodoNumberCategory('Goals')
+           
+        })
         .catch (err => console.log(err))
       }
 
@@ -100,15 +139,30 @@ export default {
       //get All Todos before component mount
       onBeforeMount (() => {
         getTodos()
+        
       })
+
+      const handleGetTodosByCategory =  (category) => {
+
+
+        stateTemp.todos=state.todos
+        if (category != 'All')
+        stateTemp.todos = stateTemp.todos.filter(todo => todo.category === category)
+      }
 
       return {
         isAddingTodo,
         handleAddingButtonEvent,
-        state,
+        stateTemp,
         addTodo,
         successToast,
-        deleteTodo
+        deleteTodo,
+        todosNb,
+        workCount,
+        healthCount,
+        studiesCount,
+        goalsCount,
+        handleGetTodosByCategory
       }
   }
 }
