@@ -1,23 +1,28 @@
 <template>
-    <div class="grid m-3 p-2 lg:flex max-w-screen">
-      <div class="mx-auto w-full max-w-screen h-screen max-h-screen p-2 rounded-md shadow-md bg-blue-500 ">
+    <div :class="{'dark':darkMode}" class="mx-auto grid m-3 p-2 max-w-screen md:w-fit">
+      <div class="mx-auto w-full max-w-screen h-screen max-h-screen p-2 rounded-md shadow-md bg-blue-500 dark:bg-gray-500">
         <div class="flex justify-between">
          <div class="text-white font-bold">Todos</div>
-          <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" data-te-dropdown-toggle-ref aria-expanded="false">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
-           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-          </svg>
+         
+
+          <button @click="darkMode=!darkMode">
+            <svg v-if="!darkMode" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white" fill="white">
+             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+           </svg>
+           <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white" fill="white">
+           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+           </svg>
         </button>
       </div>
        <div>
-        <button class="bg-white py-1 w-full rounded-md mt-2" @click="handleAddingButtonEvent">
+        <button class="bg-white py-1 w-full rounded-md mt-2 dark:bg-gray-400" @click="handleAddingButtonEvent">
           <svg v-if=isAddingTodo xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto text-red-500">
+          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto dark:text-white text-red-500">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
 
           <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto text-blue-500">
+          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto dark:text-white text-blue-500">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
 
@@ -34,14 +39,14 @@
                     ></todoNavBar>
        <TodoAddTaskForm v-if=isAddingTodo  @addNewTodo=addTodo></TodoAddTaskForm>
        <div v-else-if="stateTemp.todos.length >0">
-       <div class="border border-red">
+       <div>
        <div v-for="todo in stateTemp.todos" :key="todo.id">
-        <TodoCard :todo=todo @TodoIsDone=checkTodo @deleteTodo="deleteTodo"></TodoCard>
+        <TodoCard :todo=todo @TodoIsDone=checkTodo @deleteTodo="deleteTodo" @undoTodo="undoTodo"></TodoCard>
        </div>
       </div>
       </div>
-       <div v-else class="py-2 bg-blue-300 mt-2 rounded-md"> 
-       <div class="mx-auto text-blue-600 font-meduim w-fit">
+       <div v-else class="py-2 bg-blue-300 mt-2 rounded-md dark:bg-gray-400"> 
+       <div class="mx-auto text-blue-600 font-meduim w-fit dark:text-gray-700">
         Nothing here !
       </div>
       </div>
@@ -65,6 +70,7 @@ export default {
   },
   setup () {
 
+      const darkMode = ref (false)
       const isAddingTodo = ref(false)
       const todosNb = ref (0)
       const state = reactive({todos : []})
@@ -94,6 +100,7 @@ export default {
         .then(res => res.json())
         .then(data => {
           state.todos = data
+          state.todos.sort((t1,t2) => Number(t2.isDone) - Number(t1.isDone))
           stateTemp.todos = data
           todosNb.value = data.length
           healthCount.value = getTodoNumberCategory('Health'),
@@ -141,16 +148,30 @@ export default {
       }
 
 
-      const checkTodo = (data) => {
-        data.isDone = true
+      const checkTodo = (todo) => {
+        todo.isDone = true
 
-        fetch("http://localhost:3000/todos/"+data.id, 
+        fetch("http://localhost:3000/todos/"+todo.id, 
           {method: "PUT",
               headers: {"Content-Type": "application/json",},
-                  body: JSON.stringify(data),})
+                  body: JSON.stringify(todo),})
         .then (data => {
           if (data.status == 200)
-          console.log("Success")
+             getTodos()
+        }).catch (err => console.log(err))
+
+      }
+
+      const undoTodo =  (todo) => {
+
+        todo.isDone = false 
+        fetch("http://localhost:3000/todos/"+todo.id, 
+          {method: "PUT",
+              headers: {"Content-Type": "application/json",},
+                  body: JSON.stringify(todo),})
+        .then (data => {
+          if (data.status == 200)
+             getTodos()
         }).catch (err => console.log(err))
 
       }
@@ -176,6 +197,7 @@ export default {
         }
       }
 
+
       return {
         isAddingTodo,
         handleAddingButtonEvent,
@@ -190,7 +212,9 @@ export default {
         goalsCount,
         doneCount,
         handleGetTodosByCategory,
-        checkTodo
+        checkTodo,
+        undoTodo,
+        darkMode
       }
   }
 }

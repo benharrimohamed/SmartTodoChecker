@@ -1,5 +1,7 @@
 <template>
-<div class="bg-white dark:bg-slate-600 my-2 p-3 rounded-lg shadow-md cursor-pointer ">
+<div :class="{'rotate-1':isGrabbed}" 
+@mouseleave="isGrabbed=false" 
+@mouseenter="isGrabbed=true" class="bg-white dark:bg-slate-600 my-2 p-3 rounded-lg shadow-lg cursor-pointer ">
     <div class="text-slate-600 dark:text-white font-bold text-md mx-auto">
         <div class="flex justify-between items-center">
         <div>{{ todo.title }}</div>
@@ -10,7 +12,7 @@
         </svg>
         </div>
         <div v-else>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <svg @click=handleUndoTodo xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hover:text-blue-500">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-6 6m0 0l-6-6m6 6V9a6 6 0 0112 0v3" />
         </svg>
         </div>
@@ -30,19 +32,23 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive,ref } from 'vue'
 
 export default {
     props: ["todo"],
     setup(props, {emit}) {
+        const isGrabbed = ref(false)
         const todo = reactive(props.todo)
         const handleDeleteTodo = () => { emit ("deleteTodo",todo.id)}
         const handleTodoIsDone = () => { emit ("TodoIsDone",todo)}
+        const handleUndoTodo = () => { emit ("undoTodo",todo)}
 
         return {
             todo,
             handleDeleteTodo,
-            handleTodoIsDone
+            handleTodoIsDone,
+            handleUndoTodo,
+            isGrabbed
         }
     }
 }
