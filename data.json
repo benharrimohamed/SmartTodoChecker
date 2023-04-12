@@ -1,3 +1,18 @@
 {
-  "todos": []
+  "todos": [
+    {
+      "title": "My homeworks",
+      "description": "Do something nice for someone I care about",
+      "category": "Studies",
+      "isDone": true,
+      "id": 1
+    },
+    {
+      "title": "My homeworks",
+      "description": "Do something nice for someone I care about",
+      "category": "Studies",
+      "isDone": false,
+      "id": 1
+    }
+  ]
 }
