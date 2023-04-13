@@ -1,10 +1,7 @@
 <template>
-  <div
-    :class="{ dark: darkMode }"
-    class="mx-auto grid m-3 p-2 max-w-screen md:w-2/4 md:mx-auto"
-  >
+  <div :class="{ dark: darkMode }" class="w-full p-4 border border-red-300">
     <div
-      class="mx-auto w-full max-w-screen h-screen max-h-screen p-2 rounded-md shadow-md bg-blue-500 dark:bg-gray-500"
+      class="w-full p-2 h-screen rounded-md shadow-md bg-blue-500 dark:bg-gray-500 md:w-1/2 md:mx-auto overflow-y-auto mb-20"
     >
       <div class="flex justify-between">
         <div class="text-white font-bold">Todos</div>
@@ -95,7 +92,7 @@
         @addNewTodo="addTodo"
       ></TodoAddTaskForm>
       <div v-else-if="stateTemp.todos.length > 0">
-        <div>
+        <div class="border border-red-300 h-screen overflow-y-auto mb-3">
           <div v-for="todo in stateTemp.todos" :key="todo.id">
             <TodoCard
               :todo="todo"
@@ -117,17 +114,17 @@
 
 <script>
 import TodoCard from "./components/TodoCard.vue";
+import { onBeforeMount, reactive, ref, computed } from "vue";
+import TodoNavBar from "./components/TodoNavBar.vue";
+import SearchTodo from "./components/SearchTodo.vue";
 import TodoAddTaskForm from "./components/TodoAddTaskForm.vue";
-import { onBeforeMount, reactive, ref } from "vue";
-import successToast from "./components/Toasts/successToast.vue";
-import todoNavBar from "./components/todoNavBar.vue";
 
 export default {
   components: {
     TodoCard,
+    TodoNavBar,
+    SearchTodo,
     TodoAddTaskForm,
-    successToast,
-    todoNavBar,
   },
   setup() {
     const darkMode = ref(false);
@@ -140,6 +137,7 @@ export default {
     const studiesCount = ref(0);
     const goalsCount = ref(0);
     const doneCount = ref(0);
+    const searchInput = ref("");
 
     // Show and hide the add Todo form
     const handleAddingButtonEvent = () => {
@@ -252,12 +250,15 @@ export default {
       }
     };
 
+    const lookUpForTodo = (input) => {
+      console.log(input);
+    };
+
     return {
       isAddingTodo,
       handleAddingButtonEvent,
       stateTemp,
       addTodo,
-      successToast,
       deleteTodo,
       todosNb,
       workCount,
@@ -269,6 +270,8 @@ export default {
       checkTodo,
       undoTodo,
       darkMode,
+      searchInput,
+      lookUpForTodo,
     };
   },
 };

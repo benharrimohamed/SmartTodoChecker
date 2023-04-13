@@ -1,5 +1,7 @@
 <template>
-  <div class="overflow-x-auto flex mt-2 space-x-4 items-center">
+  <div
+    class="overflow-x-auto flex mt-2 space-x-4 items-center border border-red-400"
+  >
     <div
       @click="handleAllTodos"
       class="dark:bg-gray-400 border border-white flex justify-between items-center cursor-pointer bg-cyan-500 px-2 py-1 text-white rounded-full shadow-lg"
@@ -48,6 +50,36 @@
       <span
         class="dark:bg-gray-600 dark:text-white ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-purple-800 bg-purple-200 rounded-full"
         >{{ studiesCount }}</span
+      >
+    </div>
+    <div
+      @click="handleGoalTodos"
+      class="dark:bg-gray-400 border border-white flex justify-between items-center cursor-pointer bg-gray-500 px-2 py-1 text-white rounded-full shadow-lg"
+    >
+      Goals
+      <span
+        class="dark:bg-gray-600 dark:text-white ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full"
+        >{{ goalsCount }}</span
+      >
+    </div>
+    <div
+      @click="handleGoalTodos"
+      class="dark:bg-gray-400 border border-white flex justify-between items-center cursor-pointer bg-gray-500 px-2 py-1 text-white rounded-full shadow-lg"
+    >
+      Goals
+      <span
+        class="dark:bg-gray-600 dark:text-white ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full"
+        >{{ goalsCount }}</span
+      >
+    </div>
+    <div
+      @click="handleGoalTodos"
+      class="dark:bg-gray-400 border border-white flex justify-between items-center cursor-pointer bg-gray-500 px-2 py-1 text-white rounded-full shadow-lg"
+    >
+      Goals
+      <span
+        class="dark:bg-gray-600 dark:text-white ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full"
+        >{{ goalsCount }}</span
       >
     </div>
     <div
