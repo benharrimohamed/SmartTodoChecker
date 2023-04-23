@@ -1,7 +1,7 @@
 <template>
   <div :class="{ dark: darkMode }" class="w-full p-4 border border-red-300">
     <div
-      class="w-full p-2 h-screen rounded-md shadow-md bg-blue-500 dark:bg-gray-500 md:w-1/2 md:mx-auto overflow-y-auto mb-20"
+      class="w-full p-2 h-screen rounded-md shadow-md bg-blue-500 dark:bg-gray-500 md:w-1/2 md:mx-auto overflow-y-auto"
     >
       <div class="flex justify-between">
         <div class="text-white font-bold">Todos</div>
@@ -138,6 +138,7 @@ export default {
     const goalsCount = ref(0);
     const doneCount = ref(0);
     const searchInput = ref("");
+    const apiURL = new URL("http://localhost:3000/todos");
 
     // Show and hide the add Todo form
     const handleAddingButtonEvent = () => {
@@ -155,7 +156,7 @@ export default {
 
     // Get All Todos from database
     const getTodos = async () => {
-      fetch("http://localhost:3000/todos") //Fetch data from the Api url (GET)
+      fetch(apiURL) //Fetch data from the Api url (GET)
         .then((res) => res.json())
         .then((data) => {
           state.todos = data;
@@ -174,7 +175,7 @@ export default {
 
     //Add a new todo to database
     const addTodo = async (data) => {
-      fetch("http://localhost:3000/todos", {
+      fetch(apiURL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -191,7 +192,7 @@ export default {
     //delete Todo from database
 
     const deleteTodo = async (id) => {
-      fetch("http://localhost:3000/todos/" + id, {
+      fetch(apiURL + id, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       })
@@ -207,7 +208,7 @@ export default {
     const checkTodo = (todo) => {
       todo.isDone = true;
 
-      fetch("http://localhost:3000/todos/" + todo.id, {
+      fetch(apiURL + todo.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(todo),
@@ -220,7 +221,7 @@ export default {
 
     const undoTodo = (todo) => {
       todo.isDone = false;
-      fetch("http://localhost:3000/todos/" + todo.id, {
+      fetch(apiURL + todo.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(todo),
